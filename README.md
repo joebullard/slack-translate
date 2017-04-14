@@ -12,7 +12,7 @@ managing multiple API keys. For my team, this is not an issue right now since
 we only have two primary languages. I will be improving this very soon.
 
 
-## Examples
+## Usage
 
 My setup has English and Japanese:
 
@@ -25,7 +25,7 @@ This is the displayed (private) output:
 
 ## Setup
 
-#### Create the Slack Command
+### Create the Slack Command
 
 First, create a Slack slash-command integration for your team. See this
 [link](https://api.slack.com/slash-commands) if you do not know how to do that.
@@ -39,7 +39,7 @@ example in `config.json.example`).
 **Currently this is done per language, see note at top of this README)**.
 
 
-#### Deploy the Cloud Function
+### Deploy the Cloud Function
 
 This assumes you are familiar with Google Cloud Platform (GCP) in general.
 You will need a Google Cloud project with the Cloud Functions (beta) API
