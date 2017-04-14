@@ -1,0 +1,17 @@
+{
+  "name": "slack-translate-commond",
+  "version": "0.1.0",
+  "description": "Translate a message in Slack before you send it",
+  "main": "index.js",
+  "keywords": [
+    "Google",
+    "Translate",
+    "Slack",
+    "Functions",
+    "GCP"
+  ],
+  "author": "Joe Bullard",
+  "dependencies": {
+    "@google-cloud/translate": "^0.8.0"
+  }
+}
