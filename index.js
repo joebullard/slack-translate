@@ -1,16 +1,19 @@
 'use strict';
 
 const config = require('./config.json');
-const googleTranslate = require('@google-cloud/translate')();
+const Translate = require('@google-cloud/translate');
 
+/**
+ * Handle incoming messages from Slack
+ */
 exports.translate = function(req, res) {
   return Promise.resolve()
     .then(() => {
       validateRequest(req);
-      return makeTranslateRequest(req.body.text, req.query.lang);
+      return Translate().translate(req.body.text, req.query.lang);
     })
-    .then((response) => {
-      res.json(response);
+    .then((results) => {
+      res.json(formatSlackMessage(req.body.text, results[0]));
     })
     .catch((err) => {
       res.status(err.code || 500);
@@ -18,54 +21,46 @@ exports.translate = function(req, res) {
     })
 }
 
+/**
+ * Require POST method, `lang` query param, and verify that the request is
+ * coming from the right Slack team.
+ */
 function validateRequest (req) {
-  console.log(req);
-    if (req.method != 'POST') {
-      const error = new Error('Only POST requests are accepted');
-      error.code = 405;
-      throw error;
-    }
+    if (req.method != 'POST')
+      makeError('Only POST requests are accepted', 405);
 
-    if (!req.query.lang || !config[req.query.lang]) {
-      const error = new Error('Invalid `lang` query parameter');
-      error.code(400);
-      throw error;
-    }
+    if (!req.query.lang || !config[req.query.lang])
+      makeError('Invalid `lang` query parameter', 400);
 
-    if (!req.body || req.body.token !== config[req.query.lang].SLACK_TOKEN) {
-      const error = new Error('Invalid credentials');
-      error.code = 401;
-      throw error;
-    }
+    if (!req.body || req.body.token !== config[req.query.lang].SLACK_TOKEN)
+      makeError('Invalid credentials', 401);
 }
 
-function makeTranslateRequest(text, lang) {
-  return new Promise((resolve, reject) => {
-    googleTranslate.translate(text, lang, (err, translation) => {
-      if (err) {
-        console.log(err);
-        return reject(err);
-      }
-
-      resolve(formatSlackMessage(text, translation));
-    });
-  });
-}
-
+/**
+ * Format the final results for posting in Slack
+ */
 function formatSlackMessage(text, translation) {
   return {
     response_type: 'ephemeral',
     attachments: [
       {
-        title: "Input",
+        color: 'good',
         text: text
       },
       {
-        title: "Output",
+        color: 'good',
         text: translation
       }
     ]
   }
 }
 
+/**
+ * Build a generic error
+ */
+function makeError(message, code) {
+  const error = new Error(message);
+  error.code = code;
+  throw err;
+}
 
