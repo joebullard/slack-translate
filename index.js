@@ -6,7 +6,7 @@ const Translate = require('@google-cloud/translate');
 /**
  * Handle incoming messages from Slack
  */
-exports.translate = function(req, res) {
+exports.translate = function (req, res) {
   return Promise.resolve()
     .then(() => {
       validateRequest(req);
