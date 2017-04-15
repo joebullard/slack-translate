@@ -17,7 +17,9 @@ exports.translate = function (req, res) {
     })
     .catch((err) => {
       res.status(err.code || 500);
-      res.json({message: err.message});
+      res.json({
+        text: `ERROR (${res.status}) ${err.message}`
+      });
     })
 }
 
