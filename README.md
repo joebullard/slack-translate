@@ -3,13 +3,14 @@
 For now, this repo provides Google Cloud Functions which can be deployed and
 configured as Slack slash-commands for translation of messages.
 
-**NOTE**:
+The current architecture requires the language to be sent as
+a query param. This means that you need one Slack command (and its API key) for
+every desired target language, instead of having one command which treats the
+first word as a parameter for example.
 
-The current architecture is not good, as it requires the language to be sent as
-a query param from Slack, added by different commands, instead of having one
-command which treats the first word as a parameter for example. This means
-managing multiple API keys. For my team, this is not an issue right now since
-we only have two primary languages. I will be improving this very soon.
+I will not be changing this anytime soon, as my team only cares about
+English/Japanese translation, and it is more user-friendly to have two commands
+which operate in opposite directions (see images below).
 
 
 ## Usage
