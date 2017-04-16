@@ -1,0 +1,19 @@
+{
+  "name": "slack-translate-bot",
+  "version": "0.1.0",
+  "description": "Translation bot for Slack.",
+  "main": "translate-bot.js",
+  "keywords": [
+    "Google",
+    "Translate",
+    "Slack",
+    "Slackbot"
+  ],
+  "author": "Joe Bullard",
+  "dependencies": {
+    "@google-cloud/translate": "^0.8.1",
+    "botkit": "^0.5.2"
+  },
+  "devDependencies": {},
+  "license": "ISC"
+}
