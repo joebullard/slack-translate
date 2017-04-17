@@ -1,48 +1,68 @@
+var env = require('node-env-file');
+env(process.env.ENV || '.env')
 var fs = require('fs');
 var Botkit = require('botkit');
-var Translate = require('@google-cloud/translate');
-var config = require('./config.json');
+var Translate = require('@google-cloud/translate')({
+    keyFilename: process.env.GOOGLE_CREDENTIALS
+});
 
-if (!config.SLACK_TOKEN) {
-  console.log('ERROR: Must define SLACK_TOKEN in config.json');
+// Need a registered bot with token
+if (!process.env.BOT_TOKEN) {
+  console.log('ERROR: Must define BOT_TOKEN in environment');
   process.exit(1);
 }
 
-if (!config.TARGET_LANG_CODE) {
-  console.log('ERROR: Must define TARGET_LANG_CODE in config.json');
+// Need to specify a target language
+if (!process.env.TARGET_LANG) {
+  console.log('ERROR: Must define TARGET_LANG in environemnt');
   process.exit(1);
 }
 
-Translate().getLanguages().then(function (data) {
+// Target language must be supported
+Translate.getLanguages().then(function (data) {
   var codes = data[0].map((lang) => lang.code);
-  if (codes.indexOf(config.TARGET_LANG_CODE) < 0) {
-    console.log(`ERROR: Invalid TARGET_LANG ${config.TARGET_LANG_CODE}`);
+
+  if (codes.indexOf(config.targetLang) < 0) {
+    console.log(`ERROR: Invalid target language ${process.env.TARGET_LANG}`);
     process.exit(1);
   }
 });
 
-var controller = Botkit.slackbot({debug: false});
+GREETING = 'Hello! My name is <@me>!';
+if (process.env.GREETING)
+  GREETING = String(fs.readFileSync(process.env.GREETING))
 
+APOLOGY = 'Sorry! I had some trouble translating your message!'
+if (process.env.APOLOGY)
+  APOLOGY = String(fs.readFileSync(process.env.APOLOGY))
+
+
+/******************************************************************************/
+
+// Create the bot
+var controller = Botkit.slackbot({debug: process.env.DEBUG || false});
+
+// Connect to RTM
 controller
-  .spawn({token: config.SLACK_TOKEN})
+  .spawn({token: process.env.BOT_TOKEN})
   .startRTM((err) => {
     if (err)
       throw new Error(err)
   });
 
+// Introduce ourselves
 controller.on('channel_joined', (bot, msg) => {
-  console.log(msg);
-  bot.reply(msg, "Hello! I'm here to translate messages into English.\n" + 
-                 "こんにちは！私はメッセージを英語に翻訳してます。");
+  bot.replyPublic(msg, GREETING.replace(/<@me>/g, '<@' + bot.name + '>'));
 });
 
+// You talkin to me?
 controller.on(['direct_mention', 'direct_message'], (bot, msg) => {
-  Translate().translate(msg.text, config.TARGET_LANG_CODE)
+  Translate.translate(msg.text, process.env.TARGET_LANG)
     .then((results) => {
       bot.reply(msg, results[0]);
     })
     .catch((err) => {
       console.log(err);
-      bot.reply(msg, 'Sorry, I fucked that one up');
+      bot.reply(msg, APOLOGY);
     })
 });
