@@ -26,14 +26,21 @@ controller
       throw new Error(err)
   });
 
-controller.on('channel_join', (bot, msg) => {
-  var greeting = process.env.GREETING || DEFAULT_GREETING;
+controller.on('bot_channel_join', (bot, msg) => {
+  // Only greet everyone on our own arrival to a channel
+  if (msg.user === bot.identity.id) {
+    var greeting = (process.env.GREETING || DEFAULT_GREETING)
+                   .replace(/<@me>/g, '<@' + bot.identity.id + '>');
 
-  bot.replyPublic(msg, greeting.replace(/<@me>/g, '<@' + bot.name + '>'));
+    bot.reply(msg, greeting);
+  }
 });
 
 controller.on(['mention', 'direct_mention', 'direct_message'], (bot, msg) => {
-  Translate.translate(msg.text, process.env.TARGET_LANG)
+  // Remove our name if not a direct mention so we don't break translation
+  var text = msg.text.replace('<@' + bot.identity.id + '>', '')
+
+  Translate.translate(text, process.env.TARGET_LANG)
     .then((results) => {
       var translation = results[0];
       var mentions = translation.match(/<@[^>]+>/g);
