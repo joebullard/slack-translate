@@ -1,6 +1,6 @@
-env/
 .env*
 *credentials*.json
+config.json
 
 # Logs
 logs
