@@ -12,9 +12,18 @@
   "author": "Joe Bullard",
   "dependencies": {
     "@google-cloud/translate": "^0.8.1",
-    "botkit": "^0.5.2",
-    "node-env-file": "^0.1.8"
+    "botkit": "^0.5.2"
   },
-  "devDependencies": {},
-  "license": "ISC"
+  "devDependencies": {
+    "dotenv": "^4.0.0"
+  },
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joebullard/slack-translate-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joebullard/slack-translate-bot/issues"
+  },
+  "homepage": "https://github.com/joebullard/slack-translate-bot#readme"
 }
