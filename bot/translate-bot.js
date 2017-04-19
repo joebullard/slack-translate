@@ -3,9 +3,6 @@ var Translate = require('@google-cloud/translate')({
     keyFilename: process.env.GOOGLE_CREDENTIALS
 });
 
-const DEFAULT_GREETING = 'Hello! My name is <@me>!'
-const DEFAULT_APOLOGY = 'Sorry! I had some trouble translating your message.'
-
 // Check if target language is supported
 Translate.getLanguages()
   .then((data) => {
@@ -27,34 +24,35 @@ controller
   });
 
 controller.on('bot_channel_join', (bot, msg) => {
-  // Only greet everyone on our own arrival to a channel
-  if (msg.user === bot.identity.id) {
-    var greeting = (process.env.GREETING || DEFAULT_GREETING)
-                   .replace(/<@me>/g, '<@' + bot.identity.id + '>');
-
-    bot.reply(msg, greeting);
-  }
+  if (process.env.GREETING && msg.user === bot.identity.id)
+    bot.reply(msg,
+        process.env.GREETING.replace(/<@me>/g, '<@' + bot.identity.id + '>'));
 });
 
 controller.on(['mention', 'direct_mention', 'direct_message'], (bot, msg) => {
   // Remove our name if not a direct mention so we don't break translation
-  var text = msg.text.replace('<@' + bot.identity.id + '>', '')
+  // Also a hacky way of dealing with <!channel> group mentions (avoid unicode
+  // conversion in translate API for the '!')
+  var text = msg.text
+              .replace('<@' + bot.identity.id + '>', '')
+              .replace(/<!([^>]+)>/, '<@@$1>');
 
   Translate.translate(text, process.env.TARGET_LANG)
     .then((results) => {
       var translation = results[0];
-      var mentions = translation.match(/<@[^>]+>/g);
+      var mentions = translation.match(/< ?@[^>]+>/g);
 
       if (mentions) {
         mentions.forEach((m) => {
           translation = translation.replace(m, m.replace(/ /g, ''))
         });
       }
-
+      translation = translation.replace(/<@@([^>]+)>/, '<!$1>').toLowerCase();
+      
       bot.reply(msg, translation);
     })
     .catch((err) => {
       console.log(err);
-      bot.reply(msg, process.env.APOLOGY || DEFAULT_APOLOGY);
+      bot.reply(msg, process.env.APOLOGY || 'ERROR');
     })
 });
