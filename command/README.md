@@ -1,6 +1,6 @@
 # Slack Translate Command
 
-For now, this repo provides Google Cloud Functions which can be deployed and
+This part of the repo provides Google Cloud Functions which can be deployed and
 configured as Slack slash-commands for translation of messages.
 
 The current architecture requires the language to be sent as
@@ -11,6 +11,11 @@ first word as a parameter for example.
 I will not be changing this anytime soon, as my team only cares about
 English/Japanese translation, and it is more user-friendly to have two commands
 which operate in opposite directions (see images below).
+
+
+**NOTE**: If the bot in this repo were hosted with a public domain, then the slash
+commands here could be implemented much better using `botkit.js`. This is next on
+my agenda for this repo.
 
 
 ## Usage
