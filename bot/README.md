@@ -13,8 +13,8 @@ multiple bots with different languages.
 
 My setup has two bots: one for English and one for Japanese:
 
-![Japanese Bot Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/images/bot-ja.png)
-![English Bot Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/images/bot-en.png)
+![Japanese Bot Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/bot/images/bot-ja.png)
+![English Bot Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/bot/images/bot-en.png)
 
 
 ## Setup and Configuration

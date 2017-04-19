@@ -22,11 +22,11 @@ my agenda for this repo.
 
 My setup has English and Japanese:
 
-![Usage Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/images/usage.png)
+![Usage Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/images/command/usage.png)
 
 This is the displayed (private) output:
 
-![Command Output Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/images/output.png)
+![Command Output Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/command/images/output.png)
 
 
 ## Setup
