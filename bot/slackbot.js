@@ -1,3 +1,4 @@
+'use strict'
 var Botkit = require('botkit');
 
 function preprocess (text, userId) {
@@ -17,7 +18,7 @@ function postprocess (text) {
   return text.replace(/<@@([^>]+)>/, '<!$1>').toLowerCase();
 };
 
-function TranslateBot (token, translator, greeting, apology, illiterate, debug) {
+function Slackbot (token, translator, greeting, apology, illiterate, debug) {
   this.token = token;
   this.translator = translator;
   this.greeting = greeting;
@@ -31,21 +32,27 @@ function TranslateBot (token, translator, greeting, apology, illiterate, debug) 
   });
 
   this.controller.on(['mention', 'direct_mention', 'direct_message'], (bot, msg) => {
-    this.translator.translate(preprocess(msg.text, bot.identity.id))
-      .then((translation) => {
-        if (translation)
-          bot.reply(msg, postprocess(translation[0]));
+    const msgText = preprocess(msg.text, bot.identity.id);
+
+    this.translator.translate(msgText)
+      .then((translatedMsgText) => {
+        if (translatedMsgText) {
+          const replyMsgText = postprocess(translatedMsgText);
+
+          bot.reply(msg, replyMsgText);
+        }
         else if (this.illiterate)
           bot.reply(msg, this.illiterate);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+
         bot.reply(msg, process.env.APOLOGY || 'ERROR');
       })
   });
 };
 
-TranslateBot.prototype.run = function () {
+Slackbot.prototype.run = function () {
   this.controller
     .spawn({token: this.token})
     .startRTM((err) => {
@@ -54,5 +61,4 @@ TranslateBot.prototype.run = function () {
     });
 };
 
-module.exports = TranslateBot;
-
+module.exports = Slackbot;

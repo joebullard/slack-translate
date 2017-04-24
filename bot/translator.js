@@ -1,3 +1,4 @@
+'use strict'
 var googleTranslate = require('@google-cloud/translate');
 
 function Translator (tgtLang, srcLang, keyFilename) {
@@ -7,17 +8,21 @@ function Translator (tgtLang, srcLang, keyFilename) {
 };
 
 Translator.prototype.translate = function (text) {
-  return this.client.detect(text)
-    .then((result) => {
-      var detectedLang = result[0].language;
+  return new Promise((resolve, reject) => {
+    this.client.detect(text)
+      .then((result) => {
+        const detectedLang = result[0].language;
 
-      if (!this.srcLang || detectedLang === this.tgtLang)
-        return this.client.translate(text, this.srcLang);
-      else if (detectedLang === this.srcLang)
-        return this.client.translate(text, this.tgtLang);
-      else
-        return Promise.resolve();
-    });
+        if (!this.srcLang || detectedLang === this.srcLang)
+          return this.client.translate(text, this.tgtLang);
+        else if (detectedLang === this.tgtLang)
+          return this.client.translate(text, this.srcLang);
+        else
+          return [undefined]
+      })
+      .then((results) => resolve(results[0]))
+      .catch(reject);
+  });
 };
 
 module.exports = Translator;
