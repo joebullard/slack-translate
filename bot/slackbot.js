@@ -50,14 +50,22 @@ function Slackbot (token, translator, greeting, apology, illiterate, debug) {
         bot.reply(msg, process.env.APOLOGY || 'ERROR');
       })
   });
+  
+  // Reconnect in the event of "stale RTM" disconnects
+  this.controller.on('rtm_close', (bot, err) => {
+    this.run();
+  });
 };
 
 Slackbot.prototype.run = function () {
   this.controller
     .spawn({token: this.token})
-    .startRTM((err) => {
-      if (err)
-        throw new Error(err)
+    .startRTM((err, bot, payload) => {
+      if (err) {
+        console.log('Failed to start RTM. Trying to reconnect...');
+
+        return setTimeout(this.run, 30000);
+      }
     });
 };
 
