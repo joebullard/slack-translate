@@ -1,5 +1,0 @@
-BOT_TOKEN=xxxxxxxxxxxxxxxx
-GOOGLE_CREDENTIALS=credentials.json
-TARGET_LANG=ja
-GREETING="Hello! My name is <@me>!"
-APOLOGY="Sorry! I had some trouble translating your message!"

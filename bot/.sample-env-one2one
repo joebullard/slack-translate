@@ -1,0 +1,6 @@
+BOT_TOKEN=xxxxxxxxxxxxxxxx
+TGT_LANG=ja
+SRC_LANG=en
+GOOGLE_CREDENTIALS=/credentials/credentials.json
+APOLOGY="Sorry! I had some trouble translating. すみませんでした！メッセージを翻訳失敗しました。:flushed:"
+ILLITERATE="I don't speak that language. その言語話せません。"

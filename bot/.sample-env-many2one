@@ -1,0 +1,5 @@
+BOT_TOKEN=xxxxxxxxxxxxxxxx
+GOOGLE_CREDENTIALS=/credentials/credentials.json
+TARGET_LANG=ja
+GREETING="Hello! My name is <@me>, I'm here to translate messages into Japanese. Mention <@me> in a message to have it publicly translated, or send me a private message if you prefer."
+APOLOGY="Sorry! I had some trouble translating your message. :flushed:"
