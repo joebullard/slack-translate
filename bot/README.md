@@ -14,6 +14,9 @@ multiple bots with different languages.
 Example of a many-to-one translation bot for English:
 
 ![Many-to-one Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/bot/images/many2one.png)
+
+Example of a bilingual one-to-one translation bot for Japanese and English:
+
 ![One-to-one Screenshot](https://raw.githubusercontent.com/joebullard/slack-translate/master/bot/images/one2one.png)
 
 
