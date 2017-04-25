@@ -10,4 +10,4 @@ RUN npm install
 
 COPY . /src/
 
-CMD ["node", "/src/translate-bot.js"]
+CMD ["node", "/src/index.js"]
