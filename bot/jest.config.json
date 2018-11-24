@@ -1,0 +1,15 @@
+{
+  "automock": false,
+  "bail": false,
+  "clearMocks": true,
+  "resetMocks": false,
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "src/**/*.js",
+    "!src/**/*.spec.js",
+    "!src/index.js"
+  ],
+  "coverageDirectory": "./coverage",
+  "testMatch": ["**/src/**/*.spec.js", "**/integration/**/*.spec.js"],
+  "testEnvironment": "node"
+}
