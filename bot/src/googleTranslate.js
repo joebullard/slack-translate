@@ -8,11 +8,16 @@ const {
 
 const client = Translate({ projectId, keyFilename });
 
-export const detectLanguage = text => client
+const detectLanguage = text => client
   .detect(text)
   .then(result => result[0].language)
   .then(language => (language === 'und' ? undefined : language));
 
-export const translate = (text, targetLanguage) => client
+const translate = (text, targetLanguage) => client
   .translate(text, targetLanguage)
   .then(result => result[0]);
+
+export {
+  detectLanguage,
+  translate,
+};
