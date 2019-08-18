@@ -5,33 +5,51 @@ import { detectLanguage, translate } from './googleTranslate';
 const { targetLanguage, sourceLanguage, responses } = config.bot;
 const controller = Botkit.slackbot({ debug: config.debug });
 
-// Remove our name if not a direct mention so we don't break translation
-const preprocess = (text, userId) => text
-  .replace(`<@${userId}>`, '');
-  // .replace(/<!([^>]+)>/, '<@@$1>');
+// Currently there is no preprocessing implemented.
+const preprocess = text => text;
 
 const postprocess = (text) => {
-  // Also a hacky way of dealing with <!channel> group mentions (avoid unicode
-  // conversion in translate API for the '!')
   let processedText = text;
 
-  const mentions = processedText.match(/< ?@[^>]+>/g);
+  // The `@channel` or `@here` mentions will appear in the API as `<!channel>` and `<!here>`.
+  // Translation will sometimes return a full-width exclamation point when translating to
+  // Japanese, so we must replace it with the half-width ASCII exclamation point.
+  // Additionally, sometimes spaces are returned inside of at-mentions, which must be removed.
+  const mentions = processedText.match(/< ?[!！@＠][^>]+>/g);
   if (mentions) {
-    mentions.forEach((m) => {
-      processedText = processedText.replace(m, m.replace(/ /g, ''));
+    mentions.forEach((mention) => {
+      const processedMention = mention
+        .replace(/ /g, '')
+        .replace(/！/, '!')
+        .replace(/＠/, '@');
+      processedText = processedText.replace(mention, processedMention);
     });
   }
 
-  return processedText.replace(/：(\w+)：/g, ':$1:');
+  // Similarly, emojis wrapped in colons, e.g. `:upside_down_face:` will also come back with
+  // full-width colons when translating to Japanese. We need to replace those, too.
+  const emojis = processedText.match(/[:：] ?([^ ：:]+) ?[:：]/g);
+  if (emojis) {
+    emojis.forEach((emoji) => {
+      const processedEmoji = emoji
+        .replace(/ /g, '')
+        .replace(/：/g, ':');
+      processedText = processedText.replace(emoji, processedEmoji);
+    });
+  }
+
+  return processedText;
 };
 
 const translateMessage = async (bot, message) => {
-  try {
-    const messageText = preprocess(message.text, bot.identity.id);
-    console.log(messageText);
-    const detectedLanguage = await detectLanguage(messageText);
-    console.log(detectedLanguage);
+  // If the bot posted a message containing a mention of itself, don't respond.
+  if (message.user === bot.identity.id) return;
 
+  try {
+    const messageText = preprocess(message.text);
+    const detectedLanguage = await detectLanguage(messageText);
+
+    // Determine which language to translate to, if any.
     let translatedText;
     if (!sourceLanguage || detectedLanguage === sourceLanguage) {
       translatedText = await translate(messageText, targetLanguage);
@@ -39,15 +57,15 @@ const translateMessage = async (bot, message) => {
       translatedText = await translate(messageText, sourceLanguage);
     }
 
-    // If we translation failed, and if we have a message set for that, respond accordingly
     if (translatedText) {
-      bot.reply(message, postprocess(translatedText));
+      //
+      bot.replyInThread(message, postprocess(translatedText));
     } else if (responses.illiterate) {
-      bot.reply(message, responses.illiterate);
+      bot.replyInThread(message, responses.illiterate);
     }
   } catch (err) {
     console.error(err);
-    bot.reply(message, responses.apology || 'ERROR');
+    bot.replyInThread(message, responses.apology || 'ERROR');
   }
 };
 
