@@ -11,7 +11,7 @@
   ],
   "author": "Joe Bullard",
   "scripts": {
-    "start": "nodemon --exec babel-node ./src/index.js",
+    "start": "nodemon ./src/index.js",
     "test": "jest",
     "lint": "eslint ./src"
   },
@@ -21,12 +21,6 @@
     "dotenv": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.6",
-    "@babel/node": "^7.0.0",
-    "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.1.5",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^23.6.0",
     "eslint": "4.19.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",

@@ -1,5 +1,5 @@
-import Translate from '@google-cloud/translate';
-import config from './config';
+const Translate = require('@google-cloud/translate');
+const config = require('./config');
 
 const {
   projectId,
@@ -17,7 +17,7 @@ const translate = (text, targetLanguage) => client
   .translate(text, targetLanguage)
   .then(result => result[0]);
 
-export {
+module.exports = {
   detectLanguage,
   translate,
 };

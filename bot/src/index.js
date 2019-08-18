@@ -1,3 +1,3 @@
-import runBot from './slackbot';
+const runBot = require('./slackbot');
 
 runBot();

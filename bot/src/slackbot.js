@@ -1,6 +1,6 @@
-import Botkit from 'botkit';
-import config from './config';
-import { detectLanguage, translate } from './googleTranslate';
+const Botkit = require('botkit');
+const config = require('./config');
+const { detectLanguage, translate } = require('./googleTranslate');
 
 const { targetLanguage, sourceLanguage, responses } = config.bot;
 const controller = Botkit.slackbot({ debug: config.debug });
@@ -97,4 +97,4 @@ controller.on('rtm_close', (bot, err) => {
   return run();
 });
 
-export default run;
+module.exports = run;

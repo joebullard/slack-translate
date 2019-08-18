@@ -1,4 +1,4 @@
-import { detectLanguage, translate } from './googleTranslate';
+const { detectLanguage, translate } = require('./googleTranslate');
 
 describe('Google Translate API wrapper', () => {
   describe('Language detection', () => {
