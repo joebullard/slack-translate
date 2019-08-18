@@ -1,4 +1,6 @@
 .env*
+coverage/
 credentials/
 images/
 node_modules/
+test/

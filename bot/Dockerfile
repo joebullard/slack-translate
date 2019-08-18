@@ -1,13 +1,18 @@
-FROM node:7.9-alpine
+FROM node:10.15-alpine AS build
 
 MAINTAINER Joe Bullard <joebullard>
 
-WORKDIR /src
+WORKDIR /app
+COPY package.json /app/package.json
+RUN yarn install --production -s
 
-COPY package.json /src/package.json
 
-RUN npm install
+FROM node:10.15-alpine
 
-COPY . /src/
+WORKDIR /app
+COPY ./src ./src
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/node_modules ./node_modules
 
-CMD ["node", "/src/index.js"]
+USER node
+CMD ["node", "/app/src/index.js"]

@@ -3,7 +3,7 @@ const dotenv =require('dotenv');
 dotenv.config();
 
 const config = {
-  debug: true,
+  debug: process.env.DEBUG || false,
   googleTranslate: {
     projectId: process.env.GOOGLE_TRANSLATE_PROJECT_ID,
     keyFilename: process.env.GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON,
