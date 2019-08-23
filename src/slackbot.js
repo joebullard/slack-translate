@@ -93,8 +93,8 @@ controller.on(['mention', 'direct_mention', 'direct_message'], translateMessage)
 
 // Simple reconnect logic
 controller.on('rtm_close', (bot, err) => {
+  // Don't do any explicit reconnect, as the underlying lib will handle it automatically (See Github Issue #1).
   console.error(err);
-  return run();
 });
 
 module.exports = run;
